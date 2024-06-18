@@ -35,12 +35,22 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+   'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
+
+    'api' => [
+        'driver' => 'token',
+        'provider' => 'users',
+    ],
+
+    'pasajero' => [
+        'driver' => 'session',
+        'provider' => 'pasajeros', 
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -64,6 +74,11 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+            'pasajeros' => [
+        'driver' => 'eloquent',
+        'model' =>  env('AUTH_MODEL',App\Models\pasajero::class),
+    ],
+
 
         // 'users' => [
         //     'driver' => 'database',
