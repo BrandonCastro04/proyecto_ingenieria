@@ -30,25 +30,20 @@
         </div>
         <button type="submit" class="btn btn-primary">Registrar</button>
       </form>
-      <AddPaymentMethod v-if="pasajeroId" :pasajero-id="pasajeroId" />
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router'; // Importar useRouter
-import AddPaymentMethod from './AddPaymentMethod.vue';
+import { useRouter } from 'vue-router';
 
 export default {
-  components: {
-    AddPaymentMethod
-  },
   setup() {
     const store = useStore();
-    const router = useRouter(); // Obtener la instancia del router
+    const router = useRouter();
 
     const formData = ref({
       username: '',
@@ -59,14 +54,13 @@ export default {
     });
 
     const errors = ref({});
-    const pasajeroId = computed(() => store.state.pasajeroId);
 
     const register = async () => {
       try {
         const response = await axios.post('/register', formData.value);
         console.log('Respuesta del backend:', response.data);
         store.commit('setPasajeroId', response.data.id);
-        router.push('/login'); // Usar router para redirigir
+        router.push('/login');
       } catch (error) {
         console.error('Error al registrar:', error.response ? error.response.data : error);
         if (error.response && error.response.data.errors) {
@@ -82,61 +76,107 @@ export default {
     return {
       formData,
       errors,
-      register,
-      pasajeroId
+      register
     };
   },
 };
 </script>
 
 <style scoped>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #2c3e50; 
+  color: #ecf0f1; 
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .register-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f0f0f0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto; 
 }
+
 h2 {
   text-align: center;
+  color: #ecf0f1; 
+  margin-bottom: 20px;
+  font-size: 24px;
 }
+
 .form-wrapper {
-  max-width: 400px;
-  width: 100%;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
+  width: 90%; 
+  max-width: 500px;
+  padding: 30px;
+  background-color: #34495e; 
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px; 
 }
+
 .register-form {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
+
 .form-group {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 20px;
 }
-.label {
-  margin-bottom: 5px;
-}
-.form-control {
-  padding: 10px;
+
+label {
+  margin-bottom: 8px;
+  color: #ecf0f1; 
+  font-weight: bold;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
 }
-.error-message {
-  color: red;
-  font-size: 12px;
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: 1px solid #6a1b9a; 
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: #f0f4f8;
+  color: #333;
 }
+
+.form-control::placeholder {
+  color: #6a1b9a; 
+}
+
 .btn-primary {
-  padding: 10px 20px;
-  background-color: #007bff;
+  padding: 15px;
+  background-color: #6a1b9a; 
   color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
+
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #4a148c; 
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+  font-size: 14px;
 }
 </style>
+
