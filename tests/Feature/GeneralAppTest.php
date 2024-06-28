@@ -8,7 +8,7 @@ use App\Models\metodo_pago;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 
-class AuthControllerTest extends TestCase
+class GeneralAppTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -53,8 +53,6 @@ class AuthControllerTest extends TestCase
             'email' => 'no-es-email'
         ]);
     }
-
- 
     
     public function test_fails_to_log_in_with_invalid_credentials()
     {
@@ -72,8 +70,43 @@ class AuthControllerTest extends TestCase
                  ->assertJson(['message' => 'Nombre de usuario o contraseña incorrectos']);
     }
 
-   
+    public function test_registro_con_email_duplicado()
+    {
+        pasajero::factory()->create(['email' => 'correo@ejemplo.com']);
 
-  
+        $data = [
+            'username' => 'usuario_valido',
+            'phone' => '123456789',
+            'email' => 'correo@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/register', $data);
+        $response->assertStatus(422)
+                 ->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_registro_exitoso()
+    {
+        $data = [
+            'username' => 'usuario_valido',
+            'phone' => '123456789',
+            'email' => 'correo@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/register', $data);
+
+        $response->assertStatus(201)
+                 ->assertJsonStructure(['message', 'id']);
+
+        $this->assertDatabaseHas('pasajeros', [
+            'username' => 'usuario_valido',
+            'phone' => '123456789',
+            'email' => 'correo@ejemplo.com',
+        ]);
+    }
 
 }
